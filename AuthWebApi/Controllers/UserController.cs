@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AuthWebApi.Data.Entities;
 using AuthWebApi.Model.BindingModel;
+using AuthWebApi.Models.DTO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -46,8 +47,22 @@ namespace AuthWebApi.Controllers
                 
                 return await Task.FromResult(ex.Message);
             }
-
             
+        }
+
+        [HttpGet("GetAllUser")]
+        public async Task<object> GetAllUser()
+        {
+            try
+            {
+                var users =  _userManager.Users.Select(x => new UserDTO(x.FullName, x.Email, x.UserName, x.DateCreated));
+                return await Task.FromResult(users);
+            }
+            catch (Exception ex)
+            {
+                
+                return await Task.FromResult(ex.Message);
+            }
         }
     }
 }
