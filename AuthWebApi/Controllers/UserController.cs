@@ -70,20 +70,20 @@ namespace AuthWebApi.Controllers
         {
             try
             {
-                if(model.Email == "" |  model.Password == "")
+                if(ModelState.IsValid)
                 {
-                        return await Task.FromResult("Parameters are missing. Parametre bekleniyor.");
+                    // return await Task.FromResult("Parameters are missing. Parametre bekleniyor.");
+                    var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password,false,false);
+                    if(result.Succeeded)
+                    {
+                        return await Task.FromResult("login successfully. Giriş Başarılı");
+                    }
                 }
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password,false,false);
-                if(result.Succeeded)
-                {
-                    return await Task.FromResult("login successfully. Giriş Başarılı");
-                }
+                
                 return await Task.FromResult("invalid Email or Password. Geçersiz email ve şifre.");
             }
             catch (Exception ex)
             {
-                
                 return await Task.FromResult(ex.Message);
             }
         }
