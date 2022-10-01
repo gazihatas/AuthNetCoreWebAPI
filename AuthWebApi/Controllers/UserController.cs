@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AuthWebApi.Data.Entities;
-using AuthWebApi.Model.BindingModel;
+using AuthWebApi.Models.BindingModel;
 using AuthWebApi.Models.DTO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -57,6 +57,29 @@ namespace AuthWebApi.Controllers
             {
                 var users =  _userManager.Users.Select(x => new UserDTO(x.FullName, x.Email, x.UserName, x.DateCreated));
                 return await Task.FromResult(users);
+            }
+            catch (Exception ex)
+            {
+                
+                return await Task.FromResult(ex.Message);
+            }
+        }
+
+        [HttpPost("Login")]
+        public async Task<object> Login([FromBody] loginBindingModel model)
+        {
+            try
+            {
+                if(model.Email == "" |  model.Password == "")
+                {
+                        return await Task.FromResult("Parameters are missing. Parametre bekleniyor.");
+                }
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password,false,false);
+                if(result.Succeeded)
+                {
+                    return await Task.FromResult("login successfully. Giriş Başarılı");
+                }
+                return await Task.FromResult("invalid Email or Password. Geçersiz email ve şifre.");
             }
             catch (Exception ex)
             {
