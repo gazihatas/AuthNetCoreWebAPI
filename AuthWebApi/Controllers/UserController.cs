@@ -1,13 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AuthWebApi.Data.Entities;
+using AuthWebApi.Models;
 using AuthWebApi.Models.BindingModel;
 using AuthWebApi.Models.DTO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AuthWebApi.Controllers
 {
@@ -19,11 +24,13 @@ namespace AuthWebApi.Controllers
        private readonly ILogger<UserController> _logger;
        private readonly UserManager<AppUser> _userManager;
        private readonly SignInManager<AppUser> _signInManager;
-        public UserController(ILogger<UserController> logger, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+       private readonly JWTConfig _jWTConfig;
+        public UserController(ILogger<UserController> logger, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IOptions<JWTConfig> jWTConfig)
         {
             _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
+            _jWTConfig = jWTConfig.Value;
         }
 
         [HttpPost("RegisterUser")]
@@ -76,7 +83,11 @@ namespace AuthWebApi.Controllers
                     var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password,false,false);
                     if(result.Succeeded)
                     {
-                        return await Task.FromResult("login successfully. Giriş Başarılı");
+
+                        var appUser = await _userManager.FindByEmailAsync(model.Email);
+                        var user = new UserDTO(appUser.FullName, appUser.Email, appUser.UserName, appUser.DateCreated);
+                        user.Token = GenerateToken(appUser);
+                        return await Task.FromResult(user);
                     }
                 }
                 
@@ -86,6 +97,25 @@ namespace AuthWebApi.Controllers
             {
                 return await Task.FromResult(ex.Message);
             }
+        }
+
+        private string GenerateToken(AppUser user)
+        {
+            var jwtTokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_jWTConfig.Key);
+            var tokenDespcriptor = new SecurityTokenDescriptor{
+                Subject = new System.Security.Claims.ClaimsIdentity(new []{
+                    new System.Security.Claims.Claim(JwtRegisteredClaimNames.NameId,user.Id),
+                    new System.Security.Claims.Claim(JwtRegisteredClaimNames.Email,user.Email),
+                    new System.Security.Claims.Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
+                }),
+
+                Expires = DateTime.UtcNow.AddHours(12),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = jwtTokenHandler.CreateToken(tokenDespcriptor);
+            return jwtTokenHandler.WriteToken(token);
         }
     }
 }

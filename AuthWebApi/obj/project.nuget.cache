@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "A7mun1Ewu5Vvhoumwp/vTSNit3bZl/Aw0ksxOGoROfYHTvmhjAxSBAHVjgFHwNb2qA5gjX3a+Tp/31uUkUC65g==",
+  "dgSpecHash": "izRZhmY/B/RfvjjpZ9JZmj223l8ceqrKphYez9GdpjE7O2cQo0iOpOJfh1IHyYIq1T8/iqVx7MC73Rw96C3jKQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\lion\\Desktop\\DemoAuth\\AuthWebApi\\AuthWebApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\lion\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
+    "C:\\Users\\lion\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\5.0.17\\microsoft.aspnetcore.authentication.jwtbearer.5.0.17.nupkg.sha512",
     "C:\\Users\\lion\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\6.0.0-preview.4.21253.5\\microsoft.aspnetcore.cryptography.internal.6.0.0-preview.4.21253.5.nupkg.sha512",
     "C:\\Users\\lion\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\6.0.0-preview.4.21253.5\\microsoft.aspnetcore.cryptography.keyderivation.6.0.0-preview.4.21253.5.nupkg.sha512",
     "C:\\Users\\lion\\.nuget\\packages\\microsoft.aspnetcore.identity.entityframeworkcore\\6.0.0-preview.4.21253.5\\microsoft.aspnetcore.identity.entityframeworkcore.6.0.0-preview.4.21253.5.nupkg.sha512",

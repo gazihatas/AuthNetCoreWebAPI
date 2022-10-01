@@ -69,3 +69,4 @@ C:\Users\lion\Desktop\DemoAuth\AuthWebApi\obj\Debug\net5.0\refint\AuthWebApi.dll
 C:\Users\lion\Desktop\DemoAuth\AuthWebApi\obj\Debug\net5.0\AuthWebApi.pdb
 C:\Users\lion\Desktop\DemoAuth\AuthWebApi\obj\Debug\net5.0\AuthWebApi.genruntimeconfig.cache
 C:\Users\lion\Desktop\DemoAuth\AuthWebApi\obj\Debug\net5.0\ref\AuthWebApi.dll
+C:\Users\lion\Desktop\DemoAuth\AuthWebApi\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
