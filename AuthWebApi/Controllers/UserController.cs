@@ -2,12 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using AuthWebApi.Data.Entities;
 using AuthWebApi.Models;
 using AuthWebApi.Models.BindingModel;
 using AuthWebApi.Models.DTO;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -57,6 +60,7 @@ namespace AuthWebApi.Controllers
             
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("GetAllUser")]
         public async Task<object> GetAllUser()
         {
@@ -111,7 +115,9 @@ namespace AuthWebApi.Controllers
                 }),
 
                 Expires = DateTime.UtcNow.AddHours(12),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                Audience=_jWTConfig.Audience,
+                Issuer = _jWTConfig.Issuer
             };
 
             var token = jwtTokenHandler.CreateToken(tokenDespcriptor);

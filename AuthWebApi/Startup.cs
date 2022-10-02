@@ -45,12 +45,16 @@ namespace AuthWebApi
             
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options=>{
                 var key=Encoding.ASCII.GetBytes(Configuration["JWTConfig:Key"]);
+                var issuer = Configuration["JWTConfig:Issuer"];
+                var audience = Configuration["JWTConfig:Audience"];
                 options.TokenValidationParameters = new TokenValidationParameters(){
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    RequireExpirationTime = true
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    RequireExpirationTime = true,
+                    ValidIssuer = issuer,
+                    ValidAudience=audience
                 };
             });
 
