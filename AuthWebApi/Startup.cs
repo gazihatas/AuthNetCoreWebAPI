@@ -24,6 +24,8 @@ namespace AuthWebApi
 {
     public class Startup
     {
+        //1
+        private readonly string _localOrigin="_localorigin";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -58,6 +60,15 @@ namespace AuthWebApi
                 };
             });
 
+            //2
+            services.AddCors(opt =>{
+                opt.AddPolicy(_localOrigin, builder =>{
+                    builder.AllowAnyOrigin();
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
+                });
+            });
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -76,6 +87,9 @@ namespace AuthWebApi
             }
 
             app.UseHttpsRedirection();
+
+            //3
+            app.UseCors(_localOrigin);
 
             app.UseRouting();
 

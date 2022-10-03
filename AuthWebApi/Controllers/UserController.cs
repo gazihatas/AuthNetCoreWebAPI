@@ -9,6 +9,7 @@ using AuthWebApi.Data.Entities;
 using AuthWebApi.Models;
 using AuthWebApi.Models.BindingModel;
 using AuthWebApi.Models.DTO;
+using Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Models;
 
 namespace AuthWebApi.Controllers
 {
@@ -47,15 +49,15 @@ namespace AuthWebApi.Controllers
                 
                 if(result.Succeeded)
                 {
-                    return await Task.FromResult("User has been Registered. Kullanıcı zaten kayıtlı.");
+                    return await Task.FromResult(new ResponseModel(ResponseCode.OK,"User has been Registered. Kullanıcı zaten kayıtlı.",null));
                 }
 
-                return await Task.FromResult(string.Join(",",result.Errors.Select(x=>x.Description).ToArray())); 
+                return await Task.FromResult(new ResponseModel(ResponseCode.Error,"",result.Errors.Select(x=>x.Description).ToArray())); 
             }
             catch (Exception ex)
             {
                 
-                return await Task.FromResult(ex.Message);
+                return await Task.FromResult(new ResponseModel(ResponseCode.Error,ex.Message, null));
             }
             
         }
@@ -71,8 +73,8 @@ namespace AuthWebApi.Controllers
             }
             catch (Exception ex)
             {
-                
-                return await Task.FromResult(ex.Message);
+
+                return await Task.FromResult(new ResponseModel(ResponseCode.Error, ex.Message, null));
             }
         }
 
@@ -83,7 +85,6 @@ namespace AuthWebApi.Controllers
             {
                 if(ModelState.IsValid)
                 {
-                    // return await Task.FromResult("Parameters are missing. Parametre bekleniyor.");
                     var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password,false,false);
                     if(result.Succeeded)
                     {
@@ -91,15 +92,15 @@ namespace AuthWebApi.Controllers
                         var appUser = await _userManager.FindByEmailAsync(model.Email);
                         var user = new UserDTO(appUser.FullName, appUser.Email, appUser.UserName, appUser.DateCreated);
                         user.Token = GenerateToken(appUser);
-                        return await Task.FromResult(user);
+
+                        return await Task.FromResult(new ResponseModel(ResponseCode.OK, "", user));
                     }
                 }
-                
-                return await Task.FromResult("invalid Email or Password. Geçersiz email ve şifre.");
+                return await Task.FromResult(new ResponseModel(ResponseCode.Error, "invalid Email or Password. Geçersiz email ve şifre.", null));
             }
             catch (Exception ex)
             {
-                return await Task.FromResult(ex.Message);
+                return await Task.FromResult(new ResponseModel(ResponseCode.Error, ex.Message, null));
             }
         }
 
