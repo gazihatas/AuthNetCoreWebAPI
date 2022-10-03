@@ -47,11 +47,19 @@ namespace AuthWebApi.Controllers
 
             try
             {
+                if(!await _roleManager.RoleExistsAsync(model.Role))
+                {
+                    return await Task.FromResult(new ResponseModel(ResponseCode.Error,"Role does not exist.",null)); 
+                }
+
+
                 var user = new AppUser(){FullName = model.FullName, Email = model.Email,UserName=model.Email, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow};
                 var result = await _userManager.CreateAsync(user,model.Password);
                 
                 if(result.Succeeded)
                 {
+                    var tempUser = await _userManager.FindByEmailAsync(model.Email);
+                    await _userManager.AddToRoleAsync(tempUser,model.Role);
                     return await Task.FromResult(new ResponseModel(ResponseCode.OK,"User has been Registered. Kullanıcı zaten kayıtlı.",null));
                 }
 
@@ -72,8 +80,16 @@ namespace AuthWebApi.Controllers
         {
             try
             {
-                var users =  _userManager.Users.Select(x => new UserDTO(x.FullName, x.Email, x.UserName, x.DateCreated));
-                return await Task.FromResult(new ResponseModel(ResponseCode.OK,"",users));
+                List<UserDTO> allUserDTO = new List<UserDTO>();
+                var users =  _userManager.Users.ToList();
+                foreach(var user in users)
+                {
+                    var role=(await _userManager.GetRolesAsync(user)).FirstOrDefault();
+
+                    allUserDTO.Add(new UserDTO(user.FullName, user.Email, user.UserName, user.DateCreated, role));
+                }
+                //return await Task.FromResult(new ResponseModel(ResponseCode.OK,"",users));
+                return await Task.FromResult(new ResponseModel(ResponseCode.OK,"", allUserDTO));
             }
             catch (Exception ex)
             {
@@ -94,10 +110,12 @@ namespace AuthWebApi.Controllers
                     {
 
                         var appUser = await _userManager.FindByEmailAsync(model.Email);
-                        var user = new UserDTO(appUser.FullName, appUser.Email, appUser.UserName, appUser.DateCreated);
+                        var role=(await _userManager.GetRolesAsync(appUser)).FirstOrDefault();
+                        var user = new UserDTO(appUser.FullName, appUser.Email, appUser.UserName, appUser.DateCreated,role);
                         user.Token = GenerateToken(appUser);
 
                         return await Task.FromResult(new ResponseModel(ResponseCode.OK, "", user));
+                        
                     }
                 }
                 return await Task.FromResult(new ResponseModel(ResponseCode.Error, "invalid Email or Password. Geçersiz email ve şifre.", null));
