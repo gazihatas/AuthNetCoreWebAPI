@@ -4,6 +4,7 @@ import { ResponseModel } from '../Models/responseModel';
 import {map} from 'rxjs/operators';
 import { ResponseCode } from '../enums/responseCode';
 import { User } from '../Models/user';
+import { Constants } from '../Helper/constants';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,7 @@ export class UserService {
 
   public getAllUser()
   {
-    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    let userInfo = JSON.parse(localStorage.getItem(Constants.USER_KEY));
     const headers= new HttpHeaders({
       'Authorization':`Bearer ${userInfo?.token}`
     });

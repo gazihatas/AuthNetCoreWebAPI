@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { Constants } from './Helper/constants';
 
 @Component({
   selector: 'app-root',
@@ -13,11 +14,11 @@ export class AppComponent {
 
   onLogout()
   {
-    localStorage.removeItem("userInfo");
+    localStorage.removeItem(Constants.USER_KEY);
   }
   get isUserlogin()
   {
-    const user = localStorage.getItem("userInfo");
+    const user = localStorage.getItem(Constants.USER_KEY);
     return user && user.length>0;
   }
 }
