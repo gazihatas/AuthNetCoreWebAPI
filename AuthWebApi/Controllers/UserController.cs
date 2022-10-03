@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AuthWebApi.Data.Entities;
@@ -74,7 +75,7 @@ namespace AuthWebApi.Controllers
         }
 
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize()]
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetAllUser")]
         public async Task<object> GetAllUser()
         {
@@ -98,6 +99,36 @@ namespace AuthWebApi.Controllers
             }
         }
 
+
+        [Authorize(Roles = "User")]
+        [HttpGet("GetUser")]
+        public async Task<object> GetUser()
+        {
+            try
+            {
+                List<UserDTO> allUserDTO = new List<UserDTO>();
+                var users =  _userManager.Users.ToList();
+                foreach(var user in users)
+                {
+                    var role=(await _userManager.GetRolesAsync(user)).FirstOrDefault();
+                        if(role=="User")
+                        {
+                            allUserDTO.Add(new UserDTO(user.FullName, user.Email, user.UserName, user.DateCreated, role));
+                        }
+                    
+                }
+                //return await Task.FromResult(new ResponseModel(ResponseCode.OK,"",users));
+                return await Task.FromResult(new ResponseModel(ResponseCode.OK,"", allUserDTO));
+            }
+            catch (Exception ex)
+            {
+
+                return await Task.FromResult(new ResponseModel(ResponseCode.Error, ex.Message, null));
+            }
+        }
+
+
+
         [HttpPost("Login")]
         public async Task<object> Login([FromBody] loginBindingModel model)
         {
@@ -112,7 +143,7 @@ namespace AuthWebApi.Controllers
                         var appUser = await _userManager.FindByEmailAsync(model.Email);
                         var role=(await _userManager.GetRolesAsync(appUser)).FirstOrDefault();
                         var user = new UserDTO(appUser.FullName, appUser.Email, appUser.UserName, appUser.DateCreated,role);
-                        user.Token = GenerateToken(appUser);
+                        user.Token = GenerateToken(appUser,role);
 
                         return await Task.FromResult(new ResponseModel(ResponseCode.OK, "", user));
                         
@@ -125,7 +156,8 @@ namespace AuthWebApi.Controllers
                 return await Task.FromResult(new ResponseModel(ResponseCode.Error, ex.Message, null));
             }
         }
-        [Authorize()]
+
+        [Authorize(Roles = "Admin")]
         [HttpPost("AddRole")]
         public async Task<object> AddRole([FromBody] AddRoleBindingModel model)
         {
@@ -159,7 +191,7 @@ namespace AuthWebApi.Controllers
             }
         }
 
-        private string GenerateToken(AppUser user)
+        private string GenerateToken(AppUser user,string role)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_jWTConfig.Key);
@@ -168,6 +200,7 @@ namespace AuthWebApi.Controllers
                     new System.Security.Claims.Claim(JwtRegisteredClaimNames.NameId,user.Id),
                     new System.Security.Claims.Claim(JwtRegisteredClaimNames.Email,user.Email),
                     new System.Security.Claims.Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
+                    new System.Security.Claims.Claim(ClaimTypes.Role,role),
                 }),
 
                 Expires = DateTime.UtcNow.AddHours(12),
