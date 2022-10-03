@@ -69,7 +69,7 @@ namespace AuthWebApi.Controllers
             try
             {
                 var users =  _userManager.Users.Select(x => new UserDTO(x.FullName, x.Email, x.UserName, x.DateCreated));
-                return await Task.FromResult(users);
+                return await Task.FromResult(new ResponseModel(ResponseCode.OK,"",users));
             }
             catch (Exception ex)
             {

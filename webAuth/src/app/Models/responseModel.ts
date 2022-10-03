@@ -1,7 +1,8 @@
 import { ResponseCode } from "../enums/responseCode";
 
 export class ResponseModel{
-  public  ResponseCode :ResponseCode=ResponseCode.NotSet;
-  public ResponseMessage:string ="";
-  public  DateSet :any
+  public  responseCode :ResponseCode=ResponseCode.NotSet;
+  public responseMessage:string ="";
+  public  dateSet :any
+
 }
