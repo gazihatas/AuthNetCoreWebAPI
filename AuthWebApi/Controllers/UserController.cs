@@ -29,13 +29,16 @@ namespace AuthWebApi.Controllers
        private readonly ILogger<UserController> _logger;
        private readonly UserManager<AppUser> _userManager;
        private readonly SignInManager<AppUser> _signInManager;
+       private readonly RoleManager<IdentityRole> _roleManager;
+
        private readonly JWTConfig _jWTConfig;
-        public UserController(ILogger<UserController> logger, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IOptions<JWTConfig> jWTConfig)
+        public UserController(ILogger<UserController> logger, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IOptions<JWTConfig> jWTConfig, RoleManager<IdentityRole> roleManager)
         {
             _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
             _jWTConfig = jWTConfig.Value;
+            _roleManager = roleManager;
         }
 
         [HttpPost("RegisterUser")]
@@ -62,7 +65,8 @@ namespace AuthWebApi.Controllers
             
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize()]
         [HttpGet("GetAllUser")]
         public async Task<object> GetAllUser()
         {
@@ -100,6 +104,39 @@ namespace AuthWebApi.Controllers
             }
             catch (Exception ex)
             {
+                return await Task.FromResult(new ResponseModel(ResponseCode.Error, ex.Message, null));
+            }
+        }
+        [Authorize()]
+        [HttpPost("AddRole")]
+        public async Task<object> AddRole([FromBody] AddRoleBindingModel model)
+        {
+            try
+            {
+                if(model==null || model.Role=="")
+                {
+                    return await Task.FromResult(new ResponseModel(ResponseCode.Error, "Parameters are missing", null));
+                }
+
+                if(await _roleManager.RoleExistsAsync(model.Role))
+                {
+                    return await Task.FromResult(new ResponseModel(ResponseCode.OK, "Role already exists",null));
+                }
+
+                var role = new IdentityRole();
+                role.Name = model.Role;
+
+                var result = await _roleManager.CreateAsync(role);
+                if(result.Succeeded)
+                {
+                    return await Task.FromResult(new ResponseModel(ResponseCode.OK, "Role added successfully",null));
+                }
+
+                return await Task.FromResult(new ResponseModel(ResponseCode.Error, "something went wrong please try again later.", null));
+            }
+            catch (Exception ex)
+            {
+                
                 return await Task.FromResult(new ResponseModel(ResponseCode.Error, ex.Message, null));
             }
         }
