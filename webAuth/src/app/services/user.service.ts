@@ -50,7 +50,7 @@ export class UserService {
         if(res.dateSet)
         {
             res.dateSet.map((x:User)=>{
-                userList.push(new User(x.fullName,x.email,x.userName));
+                userList.push(new User(x.fullName,x.email,x.userName,x.role));
             })
         }
       }
