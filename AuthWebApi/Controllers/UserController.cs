@@ -101,8 +101,8 @@ namespace AuthWebApi.Controllers
 
 
         [Authorize(Roles = "User")]
-        [HttpGet("GetUser")]
-        public async Task<object> GetUser()
+        [HttpGet("GetUserList")]
+        public async Task<object> GetUserList()
         {
             try
             {

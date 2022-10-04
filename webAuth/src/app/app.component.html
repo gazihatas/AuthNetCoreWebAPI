@@ -13,7 +13,10 @@
           <a class="nav-link active" aria-current="page" *ngIf="!isUserlogin" routerLink="/login">Login</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" *ngIf="isUserlogin" routerLink="/user-management">User Management</a>
+          <a class="nav-link active" aria-current="page" *ngIf="isUserlogin" routerLink="/all-user-management">All User</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" *ngIf="isUserlogin" routerLink="/user-management">Users</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" *ngIf="isUserlogin" routerLink="/login" (click)="onLogout()">Logout</a>
