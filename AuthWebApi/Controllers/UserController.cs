@@ -47,11 +47,21 @@ namespace AuthWebApi.Controllers
         {
 
             try
-            {
-                if(!await _roleManager.RoleExistsAsync(model.Role))
+            {   
+                if(model.Roles==null)
                 {
-                    return await Task.FromResult(new ResponseModel(ResponseCode.Error,"Role does not exist.",null)); 
+                    return await Task.FromResult(new ResponseModel(ResponseCode.Error,"Roles are missing",null)); 
                 }
+
+
+                foreach (var role in model.Roles)
+                {
+                    if(!await _roleManager.RoleExistsAsync(role))
+                    {
+                        return await Task.FromResult(new ResponseModel(ResponseCode.Error,"Role does not exist.",null)); 
+                    }
+                }
+               
 
 
                 var user = new AppUser(){FullName = model.FullName, Email = model.Email,UserName=model.Email, DateCreated = DateTime.UtcNow, DateModified = DateTime.UtcNow};
@@ -60,7 +70,11 @@ namespace AuthWebApi.Controllers
                 if(result.Succeeded)
                 {
                     var tempUser = await _userManager.FindByEmailAsync(model.Email);
-                    await _userManager.AddToRoleAsync(tempUser,model.Role);
+                     foreach (var role in model.Roles)
+                     {
+                        await _userManager.AddToRoleAsync(tempUser,role);
+                     }
+                    
                     return await Task.FromResult(new ResponseModel(ResponseCode.OK,"User has been Registered. Kullanıcı zaten kayıtlı.",null));
                 }
 
@@ -85,9 +99,9 @@ namespace AuthWebApi.Controllers
                 var users =  _userManager.Users.ToList();
                 foreach(var user in users)
                 {
-                    var role=(await _userManager.GetRolesAsync(user)).FirstOrDefault();
+                    var roles=(await _userManager.GetRolesAsync(user)).ToList();
 
-                    allUserDTO.Add(new UserDTO(user.FullName, user.Email, user.UserName, user.DateCreated, role));
+                    allUserDTO.Add(new UserDTO(user.FullName, user.Email, user.UserName, user.DateCreated, roles));
                 }
                 //return await Task.FromResult(new ResponseModel(ResponseCode.OK,"",users));
                 return await Task.FromResult(new ResponseModel(ResponseCode.OK,"", allUserDTO));
@@ -110,8 +124,8 @@ namespace AuthWebApi.Controllers
                 var users =  _userManager.Users.ToList();
                 foreach(var user in users)
                 {
-                    var role=(await _userManager.GetRolesAsync(user)).FirstOrDefault();
-                        if(role=="User")
+                    var role=(await _userManager.GetRolesAsync(user)).ToList();
+                        if(role.Any(x => x == "User"))
                         {
                             allUserDTO.Add(new UserDTO(user.FullName, user.Email, user.UserName, user.DateCreated, role));
                         }
@@ -141,9 +155,9 @@ namespace AuthWebApi.Controllers
                     {
 
                         var appUser = await _userManager.FindByEmailAsync(model.Email);
-                        var role=(await _userManager.GetRolesAsync(appUser)).FirstOrDefault();
-                        var user = new UserDTO(appUser.FullName, appUser.Email, appUser.UserName, appUser.DateCreated,role);
-                        user.Token = GenerateToken(appUser,role);
+                        var roles=(await _userManager.GetRolesAsync(appUser)).ToList();
+                        var user = new UserDTO(appUser.FullName, appUser.Email, appUser.UserName, appUser.DateCreated,roles);
+                        user.Token = GenerateToken(appUser,roles);
 
                         return await Task.FromResult(new ResponseModel(ResponseCode.OK, "", user));
                         
@@ -206,18 +220,23 @@ namespace AuthWebApi.Controllers
             }
         }
 
-        private string GenerateToken(AppUser user,string role)
+        private string GenerateToken(AppUser user,List<string> roles)
         {
-            var jwtTokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(_jWTConfig.Key);
-            var tokenDespcriptor = new SecurityTokenDescriptor{
-                Subject = new System.Security.Claims.ClaimsIdentity(new []{
+            var claims = new List<System.Security.Claims.Claim>(){
                     new System.Security.Claims.Claim(JwtRegisteredClaimNames.NameId,user.Id),
                     new System.Security.Claims.Claim(JwtRegisteredClaimNames.Email,user.Email),
                     new System.Security.Claims.Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
-                    new System.Security.Claims.Claim(ClaimTypes.Role,role),
-                }),
+            };
 
+            foreach (var role in roles) {
+                claims.Add(new System.Security.Claims.Claim(ClaimTypes.Role,role));
+            }
+
+            var jwtTokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_jWTConfig.Key);
+            var tokenDespcriptor = new SecurityTokenDescriptor{
+                
+                Subject = new System.Security.Claims.ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddHours(12),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
                 Audience=_jWTConfig.Audience,

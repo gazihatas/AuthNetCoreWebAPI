@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
       {
         localStorage.setItem(Constants.USER_KEY,JSON.stringify(data.dateSet));
         let user = data.dateSet as User;
-        if(user.role=="Admin")
+        if(user.roles.indexOf('Admin')>-1)
         {
           this.router.navigate(["/all-user-management"]);
         }else {

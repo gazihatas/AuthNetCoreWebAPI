@@ -2,13 +2,13 @@ export class User{
   public fullName:string="";
   public email:string="";
   public userName:string="";
-  public role:string="";
+  public roles:string[]=[];
 
-  constructor(fullName:string, email:string, userName:string,role:string) {
+  constructor(fullName:string, email:string, userName:string,roles:string[]) {
     this.fullName=fullName;
     this.email=email;
     this.userName=userName;
-    this.role=role;
+    this.roles=roles;
   }
 
 }
