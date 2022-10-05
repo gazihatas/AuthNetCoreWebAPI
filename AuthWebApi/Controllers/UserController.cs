@@ -89,7 +89,8 @@ namespace AuthWebApi.Controllers
         }
 
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")] 
+        [Authorize(Policy = "AdminPolicy")]
         [HttpGet("GetAllUser")]
         public async Task<object> GetAllUser()
         {

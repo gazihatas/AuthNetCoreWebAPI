@@ -65,6 +65,11 @@ namespace AuthWebApi
                 };
             });
 
+            services.AddAuthorization(option=>{
+                //option.AddPolicy("AdminPolicy", policy=>policy.RequireRole("Admin","User"));
+                option.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+            });
+
             //2
             services.AddCors(opt =>{
                 opt.AddPolicy(_localOrigin, builder =>{
