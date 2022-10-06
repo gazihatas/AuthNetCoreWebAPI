@@ -25,5 +25,16 @@
 - first project build ```dotnet build```
 - ```dotnet ef migrations add InitialMigration --output-dir "Data/Migrations"```
 - ```dotnet ef database update```
-  
+
+## Project Photos
+ ![](/swaggerAPI.PNG)
+
+
+## Contributing
+
+Pull requestler kabul edilir. Büyük değişiklikler için, lütfen önce neyi değiştirmek istediğinizi tartışmak için bir konu açınız.
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
   
