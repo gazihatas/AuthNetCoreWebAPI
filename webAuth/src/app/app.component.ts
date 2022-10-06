@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { BlockUI } from 'ng-block-ui';
 import { Constants } from './Helper/constants';
 import { User } from './Models/user';
 
@@ -9,6 +10,7 @@ import { User } from './Models/user';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  // Decorator wires up blockUI instance
   title = 'webAuth';
 
   constructor(private router:Router){}

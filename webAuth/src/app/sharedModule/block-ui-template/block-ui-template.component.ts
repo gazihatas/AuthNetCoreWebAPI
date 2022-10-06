@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-block-ui-template',
@@ -7,7 +7,6 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class BlockUiTemplateComponent implements OnInit {
 
-  @Input() message:string;
   constructor() { }
 
   ngOnInit(): void {

@@ -15,7 +15,7 @@ import { AllUserManagementComponent } from './all-user-management/all-user-manag
     LoginComponent,
     RegisterComponent,
     UserManagementComponent,
-    AllUserManagementComponent,
+    AllUserManagementComponent
   ],
   imports: [
     BrowserModule,

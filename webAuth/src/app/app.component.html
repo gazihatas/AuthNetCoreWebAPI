@@ -1,3 +1,4 @@
+
 <nav class="navbar navbar-expand-lg bg-light">
   <div class="container-fluid">
     <a class="navbar-brand" routerLink="/" routerLinkActive="router-link-active" >Navbar</a>
@@ -13,16 +14,7 @@
           <a class="nav-link active" aria-current="page" *ngIf="!isUserlogin" routerLink="/login">Login</a>
         </li>
         <li class="nav-item">
-        <!--
-          User değilse ve giriş yapılmışsa tüm kullanıcılar çalışacaktır
           <a class="nav-link active" [class.disabled]="isUser" aria-current="page" *ngIf="isUserlogin && !isUser" routerLink="/all-user-management">All User</a>
-        -->
-        <!--
-          user olsa login yapılmış ise tüm kullanıcılar gösterilir eğer apiden bir sınırlama yoksa
-        <a class="nav-link active"  aria-current="page" *ngIf="isUserlogin" routerLink="/all-user-management">All User</a>
-        -->
-
-        <a class="nav-link active" [class.disabled]="isUser" aria-current="page" *ngIf="isUserlogin && !isUser" routerLink="/all-user-management">All User</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" *ngIf="isUserlogin" routerLink="/user-management">Users</a>
