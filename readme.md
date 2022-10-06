@@ -15,6 +15,9 @@
   - ```dotnet tool install --global dotnet-ef```
 - dotnet ef
 
+ ## Swagger Packages
+  - ```dotnet add package Swashbuckle.AspNetCore --version 6.1.5```
+  
 ##  ConnectionString => appsetting.json
 -  ```"DefaultConnection":"Server=localhost;Initial Catalog=projectDB;Integrated Security=false;Timeout=30;User ID=userName;Password=Demo123456;"```
 

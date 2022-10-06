@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AuthWebApi</name>
+    </assembly>
+    <members>
+        <member name="M:AuthWebApi.Controllers.UserController.GetAllUser">
+            <summary>
+            Get All User from database | Veritabanından bütün kullanıcıları getir.
+            </summary>
+        </member>
+    </members>
+</doc>

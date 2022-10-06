@@ -214,3 +214,5 @@ C:\Users\hp\Desktop\AuthNetCoreWebAPI\AuthWebApi\obj\Debug\net5.0\refint\AuthWeb
 C:\Users\hp\Desktop\AuthNetCoreWebAPI\AuthWebApi\obj\Debug\net5.0\AuthWebApi.pdb
 C:\Users\hp\Desktop\AuthNetCoreWebAPI\AuthWebApi\obj\Debug\net5.0\AuthWebApi.genruntimeconfig.cache
 C:\Users\hp\Desktop\AuthNetCoreWebAPI\AuthWebApi\obj\Debug\net5.0\ref\AuthWebApi.dll
+C:\Users\hp\Desktop\AuthNetCoreWebAPI\AuthWebApi\bin\Debug\net5.0\AuthWebApi.xml
+C:\Users\hp\Desktop\AuthNetCoreWebAPI\AuthWebApi\obj\Debug\net5.0\AuthWebApi.xml

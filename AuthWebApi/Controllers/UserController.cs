@@ -88,9 +88,14 @@ namespace AuthWebApi.Controllers
             
         }
 
+
+        ///<summary>
+        ///Get All User from database | Veritabanından bütün kullanıcıları getir.
+        ///</summary>
+        
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        //[Authorize(Roles = "Admin")] 
-        [Authorize(Policy = "AdminPolicy")]
+        //[Authorize(Policy = "AdminPolicy")] Startuptan kullanım
+        [Authorize(Roles = "Admin")] 
         [HttpGet("GetAllUser")]
         public async Task<object> GetAllUser()
         {
