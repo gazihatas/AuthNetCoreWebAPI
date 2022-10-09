@@ -10,6 +10,9 @@
   - ```dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 6.0.0-preview.4.21253.1```
 - Microsoft.EntityFrameworkCore.Identity.EntityFrameworkCore
   - ```dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore --version 6.0.0-preview.4.21253.5``` 
+### JwtBearer Packages
+- Microsoft.AspNetCore.Authentication.JwtBearer
+  -```dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 6.0.0-preview.5.21301.17```
 
  ## Install EntityFramework CLI
   - ```dotnet tool install --global dotnet-ef```
